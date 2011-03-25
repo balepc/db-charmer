@@ -66,9 +66,36 @@ module DbCharmer
         @@db_charmer_slaves[self.name] || []
       end
 
-      def db_charmer_random_slave
+      def weights_set?
+        db_charmer_slaves_weights_sum
+      end
+
+      def db_charmer_random_slave        
         return nil unless db_charmer_slaves.any?
-        db_charmer_slaves[rand(db_charmer_slaves.size)]
+        weights_set? ?
+          db_charmer_weighted_slave :
+          db_charmer_slaves[rand(db_charmer_slaves.size)]
+      end
+
+      def db_charmer_weighted_slave
+        target = rand * db_charmer_slaves_weights_sum
+        db_charmer_slaves_weights.detect{ |key, weight| target -= weight; target < 0 }[0]
+      end
+
+      #-----------------------------------------------------------------------------
+      @@db_charmer_slaves_weights = {}
+      @@db_charmer_slaves_weights_sum = {}
+      def db_charmer_slaves_weights=(weights)
+        @@db_charmer_slaves_weights[self.name] = weights
+        @@db_charmer_slaves_weights_sum[self.name] = weights.values.reduce(:+)
+      end
+
+      def db_charmer_slaves_weights
+        @@db_charmer_slaves_weights[self.name] || []
+      end
+
+      def db_charmer_slaves_weights_sum
+        @@db_charmer_slaves_weights_sum[self.name]
       end
 
       #-----------------------------------------------------------------------------

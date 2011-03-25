@@ -16,6 +16,9 @@ module DbCharmer
         opt[:slaves] << opt[:slave] if opt[:slave]
         setup_slaves_magic(opt[:slaves], should_exist) if opt[:slaves].any?
 
+        # Set up slaves weights
+        setup_slaves_weights_magic(opt[:weights]) if opt[:weights]
+
         # Setup inheritance magic
         setup_children_magic(opt)
 
@@ -70,6 +73,10 @@ module DbCharmer
         self.extend(DbCharmer::FinderOverrides::ClassMethods)
         self.send(:include, DbCharmer::FinderOverrides::InstanceMethods)
         self.extend(DbCharmer::MultiDbProxy::MasterSlaveClassMethods)
+      end
+
+      def setup_slaves_weights_magic(weights)
+        self.db_charmer_slaves_weights = weights
       end
     end
   end
