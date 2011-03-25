@@ -181,6 +181,14 @@ from your slave (or a bunch of slaves in a round-robin manner). Here is an examp
     db_magic :slaves => [ :slave01, :slave02 ]
   end
 
+=== Setting weights to slaves
+
+If you have multiple slaves, you can set weight to any slave by specifying db_magic :slaves =>
+[ :foo, :bar ], :weights => {:foo => 10, :bar => 5}<tt>. Here is an example:
+
+  class Bar < ActiveRecord::Base
+    db_magic :slaves => [ :slave01, :slave02 ], :weights => [ :slave01 => 5, :slave 02 => 10 ]
+  end
 
 === Default Connection Switching
 
